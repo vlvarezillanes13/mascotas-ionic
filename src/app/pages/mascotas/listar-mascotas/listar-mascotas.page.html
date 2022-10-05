@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Lista de Mascotas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<div id="content">
+  <div *ngIf="loading">
+    <app-loading></app-loading>
+  </div>
+
+  <div *ngIf="!loading">
+    <ion-list>
+      <ion-item-sliding *ngFor="let mascota of listaMascotas">
+        <ion-item>
+          <ion-label>{{ mascota.nombre }}</ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option class="btnUpdate">Editar</ion-item-option>
+          <ion-item-option class="btnDelete">Eliminar</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+</div>
