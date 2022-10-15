@@ -6,11 +6,11 @@ import { ListarMascotasPage } from './listar-mascotas/listar-mascotas.page';
 
 const routes: Routes = [
   {
-    path: 'mascotas',
+    path: '',
     component: MascotasPage,
     children:[
-      { path:'', loadChildren: () => import('./listar-mascotas/listar-mascotas.module').then( m => m.ListarMascotasPageModule) },
-      { path:'**', redirectTo:'mascotas/listar'}
+      { path:'listar', loadChildren: () => import('./listar-mascotas/listar-mascotas.module').then( m => m.ListarMascotasPageModule) },
+      { path:'**', redirectTo:'listar', pathMatch:'full'}
     ]
   }
 ];

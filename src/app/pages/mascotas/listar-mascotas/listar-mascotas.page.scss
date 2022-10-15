@@ -2,21 +2,8 @@ div#content{
     height: 100%;
     --overflow-y: auto;
 
-    ion-item-option{
-        margin-right: 5px;
-    
-        &.btnUpdate{
-            background-color: rgb(223, 223, 94);
-            width: 90px;
-            border-radius: 20px;
-            color: #000;
-        }
-    
-        &.btnDelete{
-            background-color: red;
-            width: 90px;
-            border-radius: 20px;
-            color: #fff;
-        }
+    .title{
+        font-size: 21px;
+        font-weight: bold;
     }
 }

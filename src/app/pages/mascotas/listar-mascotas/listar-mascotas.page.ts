@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastController } from '@ionic/angular';
+
 import { MascotasService } from '../../../services/mascotas.service';
-import { mascota } from '../../../interfaces/mascota.interface';
+import { IMascota } from '../../../interfaces/mascota.interface';
 
 @Component({
   selector: 'app-listar-mascotas',
@@ -8,26 +10,93 @@ import { mascota } from '../../../interfaces/mascota.interface';
   styleUrls: ['./listar-mascotas.page.scss'],
 })
 export class ListarMascotasPage implements OnInit {
+  listaMascotas: IMascota[] = [];
+  loading: boolean = true;
+  message: string = '';
 
-  listaMascotas:mascota[] = []
-  loading:boolean = true
-  
   constructor(
-    private mascotasService:MascotasService
-  ) { }
+    private mascotasService: MascotasService,
+    private toastController: ToastController
+  ) {}
 
   ngOnInit() {
-    this.mascotasService.getAllMascotas()
-      .subscribe(
-        (data:mascota[]) => {
-          this.listaMascotas = data;
-        }
-      )
-    
-      setTimeout(() => {
-        this.loading = false;
-      }, 5000);
-    
+    this.loadData();
   }
 
+  public loadData() {
+
+    this.loading=true;
+    this.mascotasService.getAllMascotas().subscribe((data: IMascota[]) => {
+      this.listaMascotas = data;
+    });
+
+    setTimeout(() => {
+      this.loading = false;
+    }, 2000);
+  }
+
+  public addMascota( mascota: IMascota){
+
+    this.mascotasService.postAddMascota( mascota ).subscribe( async (resp: IMascota) => {
+      if (resp) {
+        this.message = `Se ha agregado la mascota ${resp.nombre} a la lista!`;
+      } else {
+        this.message = 'No se ha podido agregar la mascota, vuelva a intentar!';
+      }
+      const toast = await this.toastController.create({
+        message: this.message,
+        duration: 3000,
+        position: 'bottom',
+      });
+
+      await toast.present();
+      this.loadData();
+    });
+
+  }
+
+  public updateMascota( mascota: IMascota){
+
+    this.mascotasService.putUpdateMascota( mascota ).subscribe( async (resp: IMascota) => {
+      if (resp) {
+        this.message = `Se ha actualizado la mascota ${resp.nombre} en la lista!`;
+      } else {
+        this.message = 'No se ha podido actualizar la mascota, vuelva a intentar!';
+      }
+      const toast = await this.toastController.create({
+        message: this.message,
+        duration: 3000,
+        position: 'bottom',
+      });
+
+      await toast.present();
+
+      this.loadData();
+    });
+
+  }
+
+
+
+  public deleteRegister(id: number) {
+    this.mascotasService
+      .deleteMascotaById(id)
+      .subscribe(async (resp: IMascota) => {
+        if (resp) {
+          this.message = `Se ha eliminado la mascota ${resp.nombre} de la lista!`;
+        } else {
+          this.message = 'No se ha podido eliminar la mascota, vuelva a intentar!';
+        }
+        const toast = await this.toastController.create({
+          message: this.message,
+          duration: 3000,
+          position: 'bottom',
+        });
+
+        await toast.present();
+        
+        this.loadData();
+      });
+
+  }
 }
