@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 
-import { MascotasService } from '../../../services/mascotas.service';
+import { MascotasService } from '../../../services/mascotas/mascotas.service';
 import { IMascota } from '../../../interfaces/mascota.interface';
 
 @Component({

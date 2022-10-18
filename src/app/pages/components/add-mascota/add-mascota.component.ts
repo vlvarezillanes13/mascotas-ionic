@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonModal } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
 import { IMascota } from '../../../interfaces/mascota.interface';
+import { PersonasService } from '../../../services/personas/personas.service';
+import { IPersona } from '../../../interfaces/persona.interface';
 
 @Component({
   selector: 'app-add-mascota',
@@ -13,24 +15,31 @@ export class AddMascotaComponent implements OnInit {
 
   @ViewChild(IonModal) modal: IonModal;
   @Output() addMascota = new EventEmitter<IMascota>();
+  personas:IPersona[] = [];
+  person:IPersona;
 
   miFormulario:FormGroup = this.fb.group({
     nombre: ['', [ Validators.required, Validators.minLength(3) ], ],
     edad: [0, [ Validators.required, Validators.min(0), Validators.max(200) ], ],
     tipo: ['', [ Validators.required, Validators.minLength(3) ], ],
+    persona: ['', [ Validators.required ], ],
     });
 
   constructor(
     private fb: FormBuilder,
+    private personasService:PersonasService
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loadPersons();
+  }
 
   cancel() {
     this.modal.dismiss(null, 'cancelar');
     this.miFormulario.reset(
       {
-        edad: 0
+        edad: 0,
+        persona: ''
       }
     );
   }
@@ -54,18 +63,33 @@ export class AddMascotaComponent implements OnInit {
     const ev = event as CustomEvent<OverlayEventDetail<string>>;
     if (ev.detail.role === 'confirmar') {
       
-      const mascota:IMascota = {
-        nombre: this.miFormulario.controls['nombre'].value,
-        edad: this.miFormulario.controls['edad'].value,
-        tipo: this.miFormulario.controls['tipo'].value
-      }
-      this.miFormulario.reset({
-        edad:0
-      })
-      this.addMascota.emit( mascota);
+      this.personasService.getPersonaById(this.miFormulario.controls['persona'].value)
+        .subscribe(
+          (resp:IPersona) => {
+            this.person = resp;
+            const mascota:IMascota = {
+              nombre: this.miFormulario.controls['nombre'].value,
+              edad: this.miFormulario.controls['edad'].value,
+              tipo: this.miFormulario.controls['tipo'].value,
+              persona: this.person
+            }           
+            this.miFormulario.reset({
+              edad:0,
+              persona: ''
+            })
+            
+            this.addMascota.emit( mascota);
+          }
+        )
     }
   }
 
-
+  loadPersons(){
+    this.personasService.getAllPersonas().subscribe(
+      (persons:IPersona[]) => {
+        this.personas = persons;
+      }
+    )
+  }
 
 }

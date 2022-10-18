@@ -22,7 +22,7 @@
         <form autocomplete="off" [formGroup]="miFormulario">
           <!-- nombre -->
           <div class="mb-3 row">
-            <label for="nombre" class="col-sm-3 col-form-label">Nombre</label>
+            <label class="col-sm-3 col-form-label">Nombre</label>
             <div class="col-sm-9">
               <input
                 placeholder="Nombre de la mascota"
@@ -40,7 +40,7 @@
           </div>
 
           <div class="mb-3 row">
-            <label for="nombre" class="col-sm-3 col-form-label">Edad</label>
+            <label  class="col-sm-3 col-form-label">Edad</label>
             <div class="col-sm-9">
               <input
                 placeholder="Edad de la mascota"
@@ -59,7 +59,7 @@
           </div>
 
           <div class="mb-3 row">
-            <label for="nombre" class="col-sm-3 col-form-label">Tipo</label>
+            <label class="col-sm-3 col-form-label">Tipo</label>
             <div class="col-sm-9">
               <input
                 placeholder="Tipo de la mascota"
@@ -75,6 +75,28 @@
               </span>
             </div>
           </div>
+
+          <div class="mb-3 row">
+            <label class="col-sm-3 col-form-label">Persona</label>
+            <div class="col-sm-9">
+              <select class="form-control"
+                    formControlName="persona">
+                <option value=""> -- Seleccione Persona --</option>
+                <option *ngFor="let persona of personas"
+                        [value]="persona.id">
+                        {{ persona.nombre }} {{ persona.apellidos}}
+                </option>
+            </select>
+
+              <span
+                class="form-text text-danger"
+                *ngIf="campoEsValido('persona')"
+              >
+                Este campo es obligatorio
+              </span>
+            </div>
+          </div>
+
         </form>
     
     </ion-content>

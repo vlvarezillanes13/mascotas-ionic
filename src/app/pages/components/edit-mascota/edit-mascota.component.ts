@@ -10,6 +10,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonModal } from '@ionic/angular';
 import { IMascota } from 'src/app/interfaces/mascota.interface';
 import { OverlayEventDetail } from '@ionic/core/components';
+import { PersonasService } from '../../../services/personas/personas.service';
+import { IPersona } from '../../../interfaces/persona.interface';
 
 @Component({
   selector: 'app-edit-mascota',
@@ -22,10 +24,16 @@ export class EditMascotaComponent implements OnInit {
   @Input() mascota: IMascota;
 
   miFormularioEdit: FormGroup;
+  persona:IPersona;
+  personas:IPersona[] = [];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private personasService:PersonasService
+    ) {}
 
   ngOnInit() {
+    this.loadPersons();
     this.loadDataForm();
   }
 
@@ -56,23 +64,39 @@ export class EditMascotaComponent implements OnInit {
         nombre: this.miFormularioEdit.controls['nombre'].value,
         edad: this.miFormularioEdit.controls['edad'].value,
         tipo: this.miFormularioEdit.controls['tipo'].value,
+        persona: this.miFormularioEdit.controls['persona'].value
       };
       this.updateMascota.emit(mascota);
     }
   }
 
-  loadDataForm() {
-    this.miFormularioEdit = this.fb.group({
-      id: [{value:this.mascota.id, disabled: true}, [Validators.required]],
-      nombre: [
-        this.mascota.nombre,
-        [Validators.required, Validators.minLength(3)],
-      ],
-      edad: [
-        this.mascota.edad,
-        [Validators.required, Validators.min(0), Validators.max(200)],
-      ],
-      tipo: [this.mascota.tipo, [Validators.required, Validators.minLength(3)]],
-    });
+  loadDataForm() {   
+    this.personasService.getPersonaById(this.mascota.persona.id).subscribe(
+      (person:IPersona) => {
+        this.persona = person;
+
+        this.miFormularioEdit = this.fb.group({
+          id: [{value:this.mascota.id, disabled: true}, [Validators.required]],
+          nombre: [
+            this.mascota.nombre,
+            [Validators.required, Validators.minLength(3)],
+          ],
+          edad: [
+            this.mascota.edad,
+            [Validators.required, Validators.min(0), Validators.max(200)],
+          ],
+          tipo: [this.mascota.tipo, [Validators.required, Validators.minLength(3)]],
+          persona: [this.persona, [ Validators.required ], ],
+        });
+      }
+    )
+  }
+
+  loadPersons(){
+    this.personasService.getAllPersonas().subscribe(
+      (persons:IPersona[]) => {
+        this.personas = persons;
+      }
+    )
   }
 }

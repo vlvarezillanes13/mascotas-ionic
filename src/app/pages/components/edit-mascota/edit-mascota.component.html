@@ -70,6 +70,28 @@
             </span>
           </div>
         </div>
+
+        <div class="mb-3 row">
+          <label class="col-sm-3 col-form-label">Persona</label>
+          <div class="col-sm-9">
+            <select class="form-control"
+                  formControlName="persona">
+              <option value=""> -- Seleccione Persona --</option>
+              <option *ngFor="let persona of personas"
+                      [value]="persona">
+                      {{ persona.nombre }} {{ persona.apellidos}}
+              </option>
+          </select>
+
+            <span
+              class="form-text text-danger"
+              *ngIf="campoEsValido('persona')"
+            >
+              Este campo es obligatorio
+            </span>
+          </div>
+        </div>
+
       </form>
     </ion-content>
   </ng-template>

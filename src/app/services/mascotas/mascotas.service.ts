@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IMascota } from '../interfaces/mascota.interface';
+import { IMascota } from '../../interfaces/mascota.interface';
 
 @Injectable({
   providedIn: 'root'
