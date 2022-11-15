@@ -5,7 +5,7 @@
         <ion-buttons slot="start">
           <ion-button (click)="cancel()">Cancelar</ion-button>
         </ion-buttons>
-        <ion-title>Editar una Mascota</ion-title>
+        <ion-title>Editar Mascota</ion-title>
         <ion-buttons slot="end">
           <ion-button (click)="confirm()" [strong]="true">Confirmar</ion-button>
         </ion-buttons>
@@ -78,7 +78,9 @@
                   formControlName="persona">
               <option value=""> -- Seleccione Persona --</option>
               <option *ngFor="let persona of personas"
-                      [value]="persona">
+                      [ngValue]="persona"
+                      [selected] = "selectPerson(persona.id)"
+                      >
                       {{ persona.nombre }} {{ persona.apellidos}}
               </option>
           </select>

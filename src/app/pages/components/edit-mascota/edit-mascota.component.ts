@@ -24,16 +24,17 @@ export class EditMascotaComponent implements OnInit {
   @Input() mascota: IMascota;
 
   miFormularioEdit: FormGroup;
-  persona:IPersona;
-  personas:IPersona[] = [];
+  persona: IPersona;
+  personas: IPersona[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private personasService:PersonasService
-    ) {}
+    private personasService: PersonasService
+  ) {}
 
   ngOnInit() {
     this.loadPersons();
+    this.getPerson(this.mascota.persona.id);
     this.loadDataForm();
   }
 
@@ -59,24 +60,29 @@ export class EditMascotaComponent implements OnInit {
   onWillDismiss(event: Event) {
     const ev = event as CustomEvent<OverlayEventDetail<string>>;
     if (ev.detail.role === 'confirmar') {
+      
       const mascota: IMascota = {
         id: this.miFormularioEdit.controls['id'].value,
         nombre: this.miFormularioEdit.controls['nombre'].value,
         edad: this.miFormularioEdit.controls['edad'].value,
         tipo: this.miFormularioEdit.controls['tipo'].value,
-        persona: this.miFormularioEdit.controls['persona'].value
+        persona: this.miFormularioEdit.controls['persona'].value 
       };
       this.updateMascota.emit(mascota);
     }
   }
 
-  loadDataForm() {   
-    this.personasService.getPersonaById(this.mascota.persona.id).subscribe(
-      (person:IPersona) => {
+  loadDataForm() {
+    this.personasService
+      .getPersonaById(this.mascota.persona.id)
+      .subscribe((person: IPersona) => {
         this.persona = person;
 
         this.miFormularioEdit = this.fb.group({
-          id: [{value:this.mascota.id, disabled: true}, [Validators.required]],
+          id: [
+            { value: this.mascota.id, disabled: true },
+            [Validators.required],
+          ],
           nombre: [
             this.mascota.nombre,
             [Validators.required, Validators.minLength(3)],
@@ -85,18 +91,30 @@ export class EditMascotaComponent implements OnInit {
             this.mascota.edad,
             [Validators.required, Validators.min(0), Validators.max(200)],
           ],
-          tipo: [this.mascota.tipo, [Validators.required, Validators.minLength(3)]],
-          persona: [this.persona, [ Validators.required ], ],
+          tipo: [
+            this.mascota.tipo,
+            [Validators.required, Validators.minLength(3)],
+          ],
+          persona: [this.persona , [Validators.required]],
         });
-      }
-    )
+      });
   }
 
-  loadPersons(){
-    this.personasService.getAllPersonas().subscribe(
-      (persons:IPersona[]) => {
-        this.personas = persons;
-      }
-    )
+  loadPersons() {
+    this.personasService.getAllPersonas().subscribe((persons: IPersona[]) => {
+      this.personas = persons;
+    });
   }
+
+  getPerson(id: number) {
+    this.persona = this.personas.find((p) => p.id === id);
+  }
+
+  selectPerson(id: number) {
+    if (this.persona.id === id) {
+      return true;
+    }
+    return false;
+  }
+
 }

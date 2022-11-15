@@ -56,7 +56,8 @@ export class ListarMascotasPage implements OnInit {
   }
 
   public updateMascota( mascota: IMascota){
-
+    console.log(mascota);
+    
     this.mascotasService.putUpdateMascota( mascota ).subscribe( async (resp: IMascota) => {
       if (resp) {
         this.message = `Se ha actualizado la mascota ${resp.nombre} en la lista!`;
